@@ -1,0 +1,4 @@
+TOKEN = Set the Discord bot token here.
+REQUESTS_CHANNEL = Set the ID of a channel in which the bot can create threads. A forum channel is intended.
+COMMAND_PREFIX = Set the prefix the bot can use for prefixed commands.
+MANAGERS = Comma-separated list of IDs of users who may run bot-administrator commands, such as `exit_bot`. Example: "111111,222222,333333"
