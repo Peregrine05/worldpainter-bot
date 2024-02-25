@@ -45,14 +45,6 @@ def add_user_command(*, display_name=None, params_help=None, example=None, help_
     return discord.user_command(**kwargs)
 
 
-def no_change(ctx, value):
-    return value
-
-
-def object_id(ctx, value):
-    return value.id
-
-
 def is_manager():
     async def predicate(ctx: discord.ext.commands.Context):
         return ctx.author.id in ctx.bot.managers
