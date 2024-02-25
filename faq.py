@@ -48,7 +48,8 @@ class FAQ(discord.ext.commands.Cog):
                 "input_type": "String",
                 "description": "The answer to the FAQ"
             }
-        ]
+        ],
+        guild_only=True
     )
     @discord.commands.default_permissions(manage_messages=True)
     async def faq_set(
@@ -94,7 +95,8 @@ class FAQ(discord.ext.commands.Cog):
                 "input_type": "String",
                 "description": "The key of the FAQ entry to be removed"
             }
-        ]
+        ],
+        guild_only=True
     )
     @discord.commands.default_permissions(manage_messages=True)
     async def faq_remove(
