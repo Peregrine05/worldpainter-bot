@@ -4,7 +4,15 @@ import discord.ext.commands
 from typing import List
 
 
-def add_slash_command(*, groups: List[discord.SlashCommandGroup] = None, display_name=None, params_help=None, example=None, help_message_container: dict, **kwargs):
+def add_slash_command(
+        *,
+        groups: List[discord.SlashCommandGroup] = None,
+        display_name=None,
+        params_help=None,
+        example=None,
+        help_message_container: dict,
+        **kwargs
+):
     if display_name is not None:
         name = display_name
     else:
@@ -15,13 +23,22 @@ def add_slash_command(*, groups: List[discord.SlashCommandGroup] = None, display
                 name = group.name + " " + name
         type_ = "slash command"
         description = kwargs.get("description")
-        help_message_container.update({name: (type_, description, params_help, example)})
+        help_message_container.update(
+            {name: (type_, description, params_help, example)}
+        )
     if groups is not None:
         return groups[-1].command(**kwargs)
     return discord.slash_command(**kwargs)
 
 
-def add_prefixed_command(*, display_name=None, params_help=None, example=None, help_message_container: dict, **kwargs):
+def add_prefixed_command(
+        *,
+        display_name=None,
+        params_help=None,
+        example=None,
+        help_message_container: dict,
+        **kwargs
+):
     if display_name is not None:
         name = display_name
     else:
@@ -29,11 +46,20 @@ def add_prefixed_command(*, display_name=None, params_help=None, example=None, h
     if name is not None:
         type_ = "prefixed command"
         description = kwargs.get("description")
-        help_message_container.update({name: (type_, description, params_help, example)})
+        help_message_container.update(
+            {name: (type_, description, params_help, example)}
+        )
     return discord.ext.commands.command(**kwargs)
 
 
-def add_user_command(*, display_name=None, params_help=None, example=None, help_message_container: dict, **kwargs):
+def add_user_command(
+        *,
+        display_name=None,
+        params_help=None,
+        example=None,
+        help_message_container: dict,
+        **kwargs
+):
     if display_name is not None:
         name = display_name
     else:
@@ -41,7 +67,9 @@ def add_user_command(*, display_name=None, params_help=None, example=None, help_
     if name is not None:
         type_ = "user command"
         description = kwargs.get("description")
-        help_message_container.update({name: (type_, description, params_help, example)})
+        help_message_container.update(
+            {name: (type_, description, params_help, example)}
+        )
     return discord.user_command(**kwargs)
 
 
