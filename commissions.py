@@ -3,13 +3,9 @@ import os
 import discord
 import discord.ext.commands
 from discord import Interaction, ApplicationContext
-import dotenv
 
 import discord_util
 from main import HelpBot
-
-
-dotenv.load_dotenv()
 
 
 class CommissionForm(discord.ui.Modal):
