@@ -135,12 +135,25 @@ async def create_commission_thread(
                 "requests. Set a forum channel ID in the `.env` file prior to "
                 "starting the bot.")
 
-    thread = await bot.get_channel(channel_id).create_thread(
+    channel: discord.ForumChannel = bot.get_channel(channel_id)
+    tags = channel.available_tags
+    for tag in tags:
+        value = int(tag.name.replace("$", "").replace(" ", "").split("-")[0])
+        if budget >= 100 and value == 100:
+            apply_tag = tag
+            break
+        elif value <= budget < value + 10:
+            apply_tag = tag
+            break
+    else:
+        return ctx.respond("No tag matched the budget.", ephemeral=True)
+
+    thread = await channel.create_thread(
         name=f"{ctx.user.name} - {map_size} - {budget}",
-        type=discord.ChannelType.public_thread,
         reason=f"{ctx.user.name} ({ctx.user.id}) submitted a commission "
                f"request.",
-        auto_archive_duration=10080
+        auto_archive_duration=10080,
+        applied_tags=[apply_tag]
     )
 
     await thread.add_user(ctx.user)
