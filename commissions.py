@@ -138,25 +138,26 @@ async def create_commission_thread(
     channel: discord.ForumChannel = bot.get_channel(channel_id)
     tags = channel.available_tags
     for tag in tags:
-        value = int(tag.name.replace("$", "").replace(" ", "").split("-")[0])
-        if budget >= 100 and value == 100:
+        value = int(tag.name.replace(
+            "$",
+            ""
+        ).replace(
+            " ",
+            ""
+        ).replace(
+            "+",
+            ""
+        ).split("-")[0])
+        budget_num = int(budget.replace("$", ""))
+        if budget_num >= 100 and value == 100:
             apply_tag = tag
             break
-        elif value <= budget < value + 10:
+        elif value <= budget_num < value + 10:
             apply_tag = tag
             break
     else:
         return ctx.respond("No tag matched the budget.", ephemeral=True)
 
-    thread = await channel.create_thread(
-        name=f"{ctx.user.name} - {map_size} - {budget}",
-        reason=f"{ctx.user.name} ({ctx.user.id}) submitted a commission "
-               f"request.",
-        auto_archive_duration=10080,
-        applied_tags=[apply_tag]
-    )
-
-    await thread.add_user(ctx.user)
     embed = discord.Embed(
         title=f"Commission Request",
         description=description,
@@ -167,8 +168,20 @@ async def create_commission_thread(
     embed.add_field(name="Deadline", value=deadline, inline=False)
     embed.add_field(name="Budget", value=budget, inline=False)
     embed.set_footer(text="Use the /close command to close this request.")
-    message = await thread.send(content=ctx.user.mention, embed=embed)
-    await message.pin()
+
+    thread = await channel.create_thread(
+        name=f"{ctx.user.name} - {map_size} - {budget}",
+        reason=f"{ctx.user.name} ({ctx.user.id}) submitted a commission "
+               f"request.",
+        auto_archive_duration=10080,
+        applied_tags=[apply_tag],
+        content=ctx.user.mention,
+        embed=embed
+    )
+
+    await thread.add_user(ctx.user)
+
+    await thread.starting_message.pin()
     return f"Go to your request: {thread.jump_url}"
 
 
@@ -344,15 +357,15 @@ class Commissions(discord.ext.commands.Cog):
             self,
             ctx: discord.commands.context.ApplicationContext
     ):
-        for message in await ctx.channel.pins():
-            if (((str(ctx.user.id) in message.content
-                 and message.author == ctx.me)
-                    or ctx.user.guild_permissions.manage_threads)
-                    and isinstance(ctx.channel, discord.Thread)):
-                await ctx.respond("This thread has been archived.")
-                await ctx.channel.edit(name="[CLOSED] " + ctx.channel.name)
-                await ctx.channel.archive(locked=True)
-                return
+
+        if (((ctx.channel.starting_message.content == ctx.user.mention
+             and ctx.channel.starting_message.author == ctx.me)
+                or ctx.user.guild_permissions.manage_threads)
+                and isinstance(ctx.channel, discord.Thread)):
+            await ctx.respond("This thread has been archived.")
+            await ctx.channel.edit(name="[CLOSED] " + ctx.channel.name)
+            await ctx.channel.archive(locked=True)
+            return
         await ctx.respond("Either you may not archive this thread, or "
                           "this is not a thread.",
                           ephemeral=True)

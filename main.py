@@ -71,7 +71,7 @@ def main():
     dotenv.load_dotenv()
     token = str(os.getenv("TOKEN"))
 
-    intents = discord.Intents.all()
+    intents = discord.Intents.default()
 
     bot = HelpBot(
         command_prefix=os.getenv("COMMAND_PREFIX"),
