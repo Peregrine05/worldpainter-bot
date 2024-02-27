@@ -318,6 +318,7 @@ class Commissions(discord.ext.commands.Cog):
         example="{}",
         guild_only=True
     )
+    @discord.commands.default_permissions(manage_messages=True)
     async def create_modal_button(
             self,
             ctx: discord.commands.context.ApplicationContext,
