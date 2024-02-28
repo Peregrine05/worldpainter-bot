@@ -358,17 +358,25 @@ class Commissions(discord.ext.commands.Cog):
             self,
             ctx: discord.commands.context.ApplicationContext
     ):
+        if not isinstance(ctx.channel, discord.Thread):
+            return await ctx.respond(content="This channel is not a thread.",
+                                     ephemeral=True)
 
-        if (((ctx.channel.starting_message.content == ctx.user.mention
-             and ctx.channel.starting_message.author == ctx.me)
-                or ctx.user.guild_permissions.manage_threads)
-                and isinstance(ctx.channel, discord.Thread)):
+        starting_message = await ctx.channel.fetch_message(ctx.channel.id)
+
+        if ((starting_message.content == ctx.user.mention
+             and starting_message.author == ctx.me)
+                or ctx.user.guild_permissions.manage_threads):
+            tags = ctx.channel.parent.available_tags
+            await ctx.channel.edit(
+                name="[CLOSED] " + ctx.channel.name,
+                applied_tags=list(filter(lambda x: x.name == "Closed", tags))
+            )
             await ctx.respond("This thread has been archived.")
-            await ctx.channel.edit(name="[CLOSED] " + ctx.channel.name)
             await ctx.channel.archive(locked=True)
             return
-        await ctx.respond("Either you may not archive this thread, or "
-                          "this is not a thread.",
+        await ctx.respond("Only the thread owner and moderators may "
+                          "archive this thread.",
                           ephemeral=True)
 
 
