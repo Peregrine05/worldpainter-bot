@@ -202,11 +202,11 @@ class FAQ(discord.ext.commands.Cog):
         example="{}",
     )
     async def faq_list(self, ctx):
+        sorted_keys = sorted(FAQ_ENTRIES.keys(), key=lambda x: x.lower())
         await ctx.respond(
             "FAQ entries are: "
             + ", ".join(
-                map(lambda x: x.center(len(x) + 2, "`"),
-                    list(FAQ_ENTRIES.keys())))
+                map(lambda x: x.center(len(x) + 2, "`"), sorted_keys))
         )
 
 
